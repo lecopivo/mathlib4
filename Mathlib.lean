@@ -6,6 +6,7 @@ import Mathlib.Data.Array.Basic
 import Mathlib.Data.ByteArray
 import Mathlib.Data.Char
 import Mathlib.Data.Container.Basic
+import Mathlib.Data.Container.Common
 import Mathlib.Data.Equiv.Basic
 import Mathlib.Data.Equiv.Functor
 import Mathlib.Data.Fin.Basic
