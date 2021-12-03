@@ -5,6 +5,7 @@ import Mathlib.Algebra.Ring.Basic
 import Mathlib.Data.Array.Basic
 import Mathlib.Data.ByteArray
 import Mathlib.Data.Char
+import Mathlib.Data.Container.Basic
 import Mathlib.Data.Equiv.Basic
 import Mathlib.Data.Equiv.Functor
 import Mathlib.Data.Fin.Basic
@@ -14,6 +15,7 @@ import Mathlib.Data.List.Card
 import Mathlib.Data.List.Perm
 import Mathlib.Data.Nat.Basic
 import Mathlib.Data.Nat.Gcd
+import Mathlib.Data.NDArray.Basic
 import Mathlib.Data.Prod
 import Mathlib.Data.String.Defs
 import Mathlib.Data.String.Lemmas
