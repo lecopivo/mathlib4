@@ -1,4 +1,4 @@
-import Mathlib.Data.Container.Basic
+import Mathlib.Data.Table.Basic
 
 structure NDArray (ι : Type u) (α : Type v) [Enumtype ι] where
   (data : Array α)
@@ -16,14 +16,14 @@ namespace NDArray
       := ⟨v.data.set ⟨i.1, by rw [v.h_size]; apply i.2; done⟩ val, sorry⟩
   def lset! (i : Nat) (val : α) : NDArray ι α := ⟨v.data.set! i val, sorry⟩
       
-  instance : Cont (NDArray ι α) ι α :=
+  instance : Table (NDArray ι α) ι α :=
   {
     toFun := λ v index => v.lget (toFin index)
   }
 
   variable [ForIn Id (Range ι) (ι × Nat)]
 
-  instance instIntroNDArray : Cont.Intro (NDArray ι α) :=
+  instance instIntroNDArray : Table.Intro (NDArray ι α) :=
   {
     intro := λ f => do
                let mut arr := Array.mkEmpty (numOf ι)
@@ -36,18 +36,18 @@ namespace NDArray
   -- to get `v.map` notation
   -- TODO: Why do I have to assign the class manually? 
   -- BUD:  I think it might be potentially a bug.
-  abbrev intro (f : ι → α) : NDArray ι α := Cont.intro f
+  abbrev intro (f : ι → α) : NDArray ι α := Table.intro f
 
-  instance : Cont.Set (NDArray ι α) := 
+  instance : Table.Set (NDArray ι α) := 
   {
     set := λ v index val => v.lset (toFin index) val
     valid := sorry
   }
 
   -- to get `v.set` notation
-  abbrev set (v : NDArray ι α) (id val) := Cont.set v id val
+  abbrev set (v : NDArray ι α) (id val) := Table.set v id val
 
-  instance instMapIdxNDArray : Cont.MapIdx (NDArray ι α) := 
+  instance instMapIdxNDArray : Table.MapIdx (NDArray ι α) := 
   {
     mapIdx := λ f v₀ => do
                 let mut v := v₀
@@ -58,19 +58,19 @@ namespace NDArray
   }
 
   -- to get `v.map` notation
-  abbrev mapIdx (f : ι → α → α) (v : NDArray ι α) : NDArray ι α := Cont.mapIdx f v
+  abbrev mapIdx (f : ι → α → α) (v : NDArray ι α) : NDArray ι α := Table.mapIdx f v
 
-  instance : Cont.Map (NDArray ι α) := 
+  instance : Table.Map (NDArray ι α) := 
   {
     map := λ f v => mapIdx (λ _ x => f x) v
     valid := sorry
   }
 
-  abbrev map (f : α → α) (v : NDArray ι α) : NDArray ι α := Cont.map f v
+  abbrev map (f : α → α) (v : NDArray ι α) : NDArray ι α := Table.map f v
 
   --- Specialized ForIn because we can use linear index to access elements 
   --- This saves us the conversion from structured index to linear
-  open Enumtype Cont in
+  open Enumtype Table in
   instance {m} [Monad m] 
            [Enumtype ι] [ForIn m (Range ι) (ι × Nat)]
            : ForIn m (NDArray ι α) (α × ι × Nat) :=
@@ -78,7 +78,7 @@ namespace NDArray
     forIn := λ v init f => do
       let mut val := init
       for (i,li) in fullRange ι do
-        -- Here we are using linear index to acces the container
+        -- Here we are using linear index to acces the table
         -- Not sure if it is worth it ... 
         match (← f (v.lget ⟨li,sorry⟩, i, li) val) with
           | ForInStep.done d => return d
@@ -125,7 +125,7 @@ section Examples
          str := str ++ s!")\n"
        str⟩
 
-  open Cont
+  open Table
   open Enumtype
 
   #eval ((do 
@@ -146,7 +146,7 @@ section Examples
     -- By default we do not execute the multiplication but just build and expression
     let u1 := m*v -- : Fin ↦ ℝ 
     let u2 : Vector 4 := m*v
-    let u : Vector 4 := cont i => ∑ j, m[i,j]*v[j]
+    let u : Vector 4 := table i => ∑ j, m[i,j]*v[j]
 
     IO.println s!"m*v:\n {u}"
 

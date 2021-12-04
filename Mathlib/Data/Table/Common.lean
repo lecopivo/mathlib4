@@ -1,26 +1,26 @@
-import Mathlib.Data.Container.Basic
+import Mathlib.Data.Table.Basic
 
-instance (α) [Inhabited α] : Cont (Array α) Nat α :=
+instance (α) [Inhabited α] : Table (Array α) Nat α :=
 {
   toFun := λ arr i => arr.get! i 
 }
 
-instance (α) [Inhabited α] : Cont.Active (Array α) :=
+instance (α) [Inhabited α] : Table.Active (Array α) :=
 {
   active := λ arr i => if i < arr.size then true else false
   finite := sorry
 }
 
--- TODO: Define `Cont.SetActive` that is a `set` on active elements
+-- TODO: Define `Table.SetActive` that is a `set` on active elements
 
 def NArray (n : Nat) (α : Type u) := { a : Array α // a.size = n }
 
-instance (n α) : Cont (NArray n α) (Fin n) α :=
+instance (n α) : Table (NArray n α) (Fin n) α :=
 {
   toFun := λ arr i => arr.1.getLit i.1 arr.2 i.2
 }
 
-instance (n α) : Cont.Set (NArray n α) :=
+instance (n α) : Table.Set (NArray n α) :=
 {
   set := λ arr i a=> ⟨arr.1.set ⟨i, sorry⟩ a, sorry⟩
   valid := sorry
@@ -28,12 +28,12 @@ instance (n α) : Cont.Set (NArray n α) :=
 
 def ByteNArray (n : Nat) := { a : ByteArray // a.size = n }
 
-instance (n) : Cont (ByteNArray n) (Fin n) UInt8 :=
+instance (n) : Table (ByteNArray n) (Fin n) UInt8 :=
 {
   toFun := λ arr i => arr.1.get ⟨i.1,sorry⟩
 }
 
-instance (n) : Cont.Set (ByteNArray n) :=
+instance (n) : Table.Set (ByteNArray n) :=
 {
   set := λ arr i c => ⟨arr.1.set ⟨i, sorry⟩ c, sorry⟩
   valid := sorry
@@ -73,10 +73,10 @@ namespace List
   -- Can this be implemented in Lean such that `l` gets mutated in place? (assuming `it` is the only owner of `l`)
   def Iterator.set {l : List α} (it : Iterator l) (a : α) : ((l' : List α) ×' Iterator l') := sorry
 
-  -- TODO: Change the definition of container from `Cont (C ι α : Type)` 
-  -- to `Cont {C} (c : C) (ι α : Type) where toFun : ι → α`
+  -- TODO: Change the definition of Table from `Table (C ι α : Type)` 
+  -- to `Table {C} (c : C) (ι α : Type) where toFun : ι → α`
   -- Then we can write:
-  -- instance (l : List α) : Cont l (Iterator l) α :=
+  -- instance (l : List α) : Table l (Iterator l) α :=
   -- {
   --   toFun := λ it => it.head
   -- }
