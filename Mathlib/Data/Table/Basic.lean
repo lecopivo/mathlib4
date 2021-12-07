@@ -366,11 +366,11 @@ namespace Table
 
   section BasicTests
 
-     def test : IO Unit := do
-         for (a,i,li) in (table i : Fin 2 × Fin 3 × Fin 4 => i.2) do 
-            IO.println s!"i = {i}  |  li = {li}  |  a = {a}"
+     -- def test : IO Unit := do
+     --     for (a,i,li) in (table i : Fin 2 × Fin 3 × Fin 4 => i.2) do 
+     --        IO.println s!"i = {i}  |  li = {li}  |  a = {a}"
 
-     #eval test
+     -- #eval test
 
 
      variable (ℝ : Type) [Add ℝ] [Sub ℝ] [Neg ℝ] [Zero ℝ]

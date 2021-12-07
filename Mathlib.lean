@@ -1,6 +1,8 @@
 import Mathlib.Algebra.Group.Basic
 import Mathlib.Algebra.Group.Defs
 import Mathlib.Algebra.GroupWithZero.Defs
+import Mathlib.Algebra.Field.Basic
+import Mathlib.Algebra.Module.Basic
 import Mathlib.Algebra.Ring.Basic
 import Mathlib.Data.Array.Basic
 import Mathlib.Data.ByteArray

@@ -27,6 +27,12 @@ export Enumtype (numOf fromFin toFin)
 
 namespace Enumtype
 
+  instance [Enumtype ι] : Iterable.UpperBound ι :=
+  {
+    upperBound := numOf ι
+    valid := sorry
+  }
+
   instance : Enumtype (Fin n) :=
   {
     numOf := n
