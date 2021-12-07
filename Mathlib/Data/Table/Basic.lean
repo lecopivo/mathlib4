@@ -321,19 +321,19 @@ namespace Table
     -- notation:  
     --      for (a,i,li) in F do
     --          ..                        
-    open Enumtype in
-    instance {m} [Monad m] {ι} {α : Type w} [Enumtype ι] [ForIn m (Range ι) (ι × Nat)]
-             : ForIn m (ι ↦ α) (α × ι × Nat) :=
-    {
-      forIn := λ F init f => do
-                 let mut val := init
-                 for (i,li) in fullRange ι do
-                   match (← f (F[i], i, li) val) with
-                   | ForInStep.done d => return d
-                   | ForInStep.yield d => val ← d
-                 pure init
-    }
-
+    -- This seems to be broken ...
+    -- open Enumtype in
+    -- instance {m} [Monad m] {ι} {α : Type w} [Enumtype ι] [ForIn m (Range ι) (ι × Nat)]
+    --          : ForIn m (ι ↦ α) (α × ι × Nat) :=
+    -- {
+    --   forIn := λ F init f => do
+    --              let mut val := init
+    --              for (i,li) in fullRange ι do
+    --                match (← f (F[i], i, li) val) with
+    --                | ForInStep.done d => return d
+    --                | ForInStep.yield d => val ← d
+    --              pure init
+    -- }
      
   end ForInNotation
 

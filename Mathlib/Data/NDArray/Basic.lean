@@ -107,11 +107,12 @@ section Examples
   -- instance (l : List Nat) : Enumtype (Tensor.indexOf l) := HOW TO DO THIS??
   -- abbrev Tensor (dims : List Nat) := NDArray (Tensor.indexOf dims)
 
+  open Table in
   instance : ToString (Vector n) :=
     ⟨λ v => do
        let mut str := "("
-       for (vi,i,li) in v do
-         str := str ++ toString vi ++ " "
+       for (i,li) in allIdx v do
+         str := str ++ toString (v[i]) ++ " "
        str := str ++ ")\n"
        str⟩
 
@@ -146,7 +147,7 @@ section Examples
     -- By default we do not execute the multiplication but just build and expression
     let u1 := m*v -- : Fin ↦ ℝ 
     let u2 : Vector 4 := m*v
-    let u : Vector 4 := table i => ∑ j, m[i,j]*v[j]
+    let u  : Vector 4 := table i => ∑ j, m[i,j]*v[j]
 
     IO.println s!"m*v:\n {u}"
 
