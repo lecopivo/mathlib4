@@ -45,22 +45,30 @@ attribute [fun_prop]
 attribute [fun_prop]
   Tendsto.prodMk
   tendsto_fst
+  Tendsto.fst
+  Tendsto.fst_nhds
   tendsto_snd
+  Tendsto.snd
+  Tendsto.snd_nhds
+
+attribute [fun_prop]
+  Continuous.tendsto
+  ContinuousAt.tendsto
 
 -- others
 attribute [fun_prop]
-  Continuous.tendsto
   Tendsto.add
   Tendsto.add_atTop
   Tendsto.atTop_add
   Tendsto.sub
   Tendsto.mul
   Tendsto.div
+
   Tendsto.neg
   Tendsto.inv
+  Tendsto.inv₀
   Tendsto.pow
   Tendsto.zpow
-
 
 
 ----------------------------------------------------------------------------------------------------
@@ -458,3 +466,140 @@ example (hf : Tendsto f (nhds 0) (nhds 1)) :
   apply Tendsto.congr_l₂
   · fun_prop
   · simp
+
+
+
+-- ══════════════════════════════════════════════════════════════
+-- disch := ... (discharger for fun_prop side conditions)
+-- ══════════════════════════════════════════════════════════════
+
+-- Inverse requires nonzero side condition
+example (h : Tendsto f atTop (nhds 3)) :
+    Tendsto (fun z => (f z)⁻¹) atTop (nhds 3⁻¹) := by
+  apply Tendsto.congr_l₂
+  · fun_prop (disch := norm_num)
+  · simp
+
+
+attribute [fun_prop] ContinuousAt.tendsto
+
+/--
+error: `fun_prop` was unable to prove `Tendsto (fun z => f z / g z) atTop ?l₂`
+
+Issues:
+  No theorems found for `HDiv.hDiv` in order to prove `[?l₂], Tendsto (fun z4z5 => z4z5.1 / z4z5.2) (𝓝 6 ×ˢ 𝓝 3) ?l₂`
+  No theorems found for `HDiv.hDiv` in order to prove `[?l₂], Tendsto (fun z => f z / g z) atTop ?l₂`
+---
+error: `simp` made no progress
+---
+error: unsolved goals
+case l₂
+f g k : ℝ → ℝ
+h₁ : Tendsto f atTop (𝓝 6)
+h₂ : Tendsto g atTop (𝓝 3)
+⊢ Filter ℝ
+-/
+#guard_msgs in
+example (h₁ : Tendsto f atTop (nhds 6)) (h₂ : Tendsto g atTop (nhds 3)) :
+    Tendsto (fun z => f z / g z) atTop (nhds 2) := by
+  apply Tendsto.congr_l₂
+  · fun_prop (disch := norm_num) -- for some reason `ContinuousAt.tendsto` does not fire :(, this is bug in `fun_prop`
+  · simp
+
+
+-- disch combined with inline args
+example (h₁ : Tendsto f atTop (nhds 6)) :
+    Tendsto (fun z => f z / 3) atTop (nhds 2) := by
+  apply Tendsto.congr_l₂
+  · fun_prop (disch := norm_num)
+  · norm_num
+
+
+example (h : Tendsto f atTop (nhds 3)) :
+    Tendsto (fun z => (f z)⁻¹) atTop (nhds 3⁻¹) := by
+  apply Tendsto.congr_l₂
+  · fun_prop (disch := norm_num)
+  · norm_num
+
+
+
+
+/--
+error: unsolved goals
+case h
+f g k : ℝ → ℝ
+⊢ Set.Ioi 0 ∈ 𝓝 2
+-/
+#guard_msgs in
+example : Tendsto (fun _ : ℝ => (2 : ℝ)) atTop (nhdsWithin 2 (Set.Ioi 0)) := by
+  apply Tendsto.congr_l₂
+  · fun_prop (disch := norm_num)
+  · simp -- how to show `𝓝[Set.Ioi 0] 2 = 𝓝 2` ??
+
+/--
+error: unsolved goals
+case h
+f g k : ℝ → ℝ
+h : Tendsto f atTop (𝓝 3)
+hpos : ∀ (x : ℝ), 0 < f x
+⊢ Set.Ioi 0 ∈ 𝓝 3
+-/
+#guard_msgs in
+example (h : Tendsto f atTop (nhds 3))
+    (hpos : ∀ x, 0 < f x) :
+    Tendsto (fun z => f z) atTop (nhdsWithin 3 (Set.Ioi 0)) := by
+  apply Tendsto.congr_l₂
+  · fun_prop (disch := norm_num)
+  · simp -- how to show `𝓝[Set.Ioi 0] 3 = 𝓝 3`
+
+
+/--
+error: unsolved goals
+case h
+f g k : ℝ → ℝ
+h : Tendsto f atTop (𝓝 3)
+hpos : ∀ (x : ℝ), 0 < f x
+⊢ Set.Ioi 0 ∈ 𝓝 3⁻¹
+-/
+#guard_msgs in
+example (h : Tendsto f atTop (nhds 3))
+    (hpos : ∀ x, 0 < f x) :
+    Tendsto (fun z => (f z)⁻¹) atTop (nhdsWithin 3⁻¹ (Set.Ioi 0)) := by
+  apply Tendsto.congr_l₂
+  · fun_prop (disch := norm_num)
+  · simp -- how to show `𝓝[Set.Ioi 0] 3⁻¹ = 𝓝 3⁻¹`
+
+-- Reversed option order works
+/--
+error: unsolved goals
+case h
+f g k : ℝ → ℝ
+h : Tendsto f atTop (𝓝 3)
+hpos : ∀ (x : ℝ), 0 < f x
+⊢ Set.Ioi 0 ∈ 𝓝 3⁻¹
+-/
+#guard_msgs in
+example (h : Tendsto f atTop (nhds 3))
+    (hpos : ∀ x, 0 < f x) :
+    Tendsto (fun z => (f z)⁻¹) atTop (nhdsWithin 3⁻¹ (Set.Ioi 0)) := by
+  apply Tendsto.congr_l₂
+  · fun_prop (disch := norm_num)
+  · simp -- `Set.Ioi 0 ∈ 𝓝 3⁻¹` ?
+
+-- within_disch with a direct ∀ᶠ-level tactic (no pointwise lift needed)
+-- Uses filter_upwards which assumption can't match
+/--
+error: unsolved goals
+case h
+f g k : ℝ → ℝ
+h : Tendsto f atTop (𝓝 3)
+hpos : ∀ (x : ℝ), 0 < f x
+⊢ Set.Ioi 0 ∈ 𝓝 3
+-/
+#guard_msgs in
+example (h : Tendsto f atTop (nhds 3))
+    (hpos : ∀ x, 0 < f x) :
+    Tendsto (fun z => f z) atTop (nhdsWithin 3 (Set.Ioi 0)) := by
+  apply Tendsto.congr_l₂
+  · fun_prop (disch := norm_num)
+  · simp -- `𝓝[Set.Ioi 0] 3 = 𝓝 3` ?
