@@ -179,6 +179,7 @@ example (h₁ : Tendsto f atTop (nhds 0)) (_h₂ : Tendsto f atTop (nhds 0)) :
   · grind
 
 
+
 -- ══════════════════════════════════════════════════════════════
 -- Issue 3: Ambiguity detection (different limits for same atom)
 -- ══════════════════════════════════════════════════════════════
@@ -603,3 +604,61 @@ example (h : Tendsto f atTop (nhds 3))
   apply Tendsto.congr_l₂
   · fun_prop (disch := norm_num)
   · simp -- `𝓝[Set.Ioi 0] 3 = 𝓝 3` ?
+
+
+
+-- ══════════════════════════════════════════════════════════════
+-- nhdsWithin goals
+-- ══════════════════════════════════════════════════════════════
+
+-- nhdsWithin goal with Set.univ (trivially closed)
+example (h : Tendsto f atTop (nhds 1)) :
+    Tendsto (fun z => f z + 1) atTop (nhdsWithin 2 Set.univ) := by
+  apply Tendsto.congr_l₂
+  · fun_prop
+  · norm_num
+
+-- nhdsWithin goal with ∀ᶠ hypothesis in context: assumption closes ∀ᶠ part
+/--
+error: unsolved goals
+case h
+f g k : ℝ → ℝ
+h : Tendsto f atTop (𝓝 1)
+hev : ∀ᶠ (z : ℝ) in atTop, f z + 1 ∈ Set.Ioi 0
+⊢ Set.Ioi 0 ∈ 𝓝 2
+-/
+#guard_msgs in
+example (h : Tendsto f atTop (nhds 1))
+    (hev : ∀ᶠ z in atTop, f z + 1 ∈ Set.Ioi 0) :
+    Tendsto (fun z => f z + 1) atTop (nhdsWithin 2 (Set.Ioi 0)) := by
+  apply Tendsto.congr_l₂
+  · fun_prop
+  · norm_num
+
+-- nhdsWithin goal with limit reconciliation
+example (h₁ : Tendsto f atTop (nhds 1)) (h₂ : Tendsto g atTop (nhds 2)) :
+    Tendsto (fun z => f z + g z) atTop (nhdsWithin 3 Set.univ) := by
+  apply Tendsto.congr_l₂
+  · fun_prop
+  · norm_num
+
+
+-- Constant body, nhdsWithin goal with Set.univ
+example : Tendsto (fun _ : ℝ => (2 : ℝ)) atTop (nhdsWithin 2 Set.univ) := by
+  apply Tendsto.congr_l₂
+  · fun_prop
+  · norm_num
+
+-- Constant body, nhdsWithin goal with nontrivial set: tactic handles nhds
+-- part, user provides the ∀ᶠ membership proof
+/--
+error: unsolved goals
+case h
+f g k : ℝ → ℝ
+⊢ Set.Ioi 0 ∈ 𝓝 2
+-/
+#guard_msgs in
+example : Tendsto (fun _ : ℝ => (2 : ℝ)) atTop (nhdsWithin 2 (Set.Ioi 0)) := by
+  apply Tendsto.congr_l₂
+  · fun_prop
+  · simp -- `𝓝[Set.Ioi 0] 2 = 𝓝 2` ?
