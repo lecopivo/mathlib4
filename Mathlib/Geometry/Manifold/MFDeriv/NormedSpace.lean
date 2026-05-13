@@ -78,6 +78,7 @@ theorem Differentiable.comp_mdifferentiableAt {g : F → F'} {f : M → F} {x : 
     (hg : Differentiable 𝕜 g) (hf : MDiffAt f x) : MDiffAt (g ∘ f) x :=
   hg.comp_mdifferentiableWithinAt hf
 
+@[to_fun (attr := fun_prop)]
 theorem Differentiable.comp_mdifferentiable {g : F → F'} {f : M → F}
     (hg : Differentiable 𝕜 g) (hf : MDiff f) : MDiff (g ∘ f) :=
   fun x ↦ hg.differentiableAt.comp_mdifferentiableAt (hf x)
@@ -121,6 +122,7 @@ theorem MDifferentiableOn.clm_precomp {f : M → F₁ →L[𝕜] F₂} {s : Set 
     MDiff[s] (fun y ↦ (f y).precomp F₃ : M → (F₂ →L[𝕜] F₃) →L[𝕜] (F₁ →L[𝕜] F₃)) :=
   fun x hx ↦ (hf x hx).clm_precomp
 
+@[fun_prop]
 theorem MDifferentiable.clm_precomp {f : M → F₁ →L[𝕜] F₂} (hf : MDiff f) :
     MDiff (fun y ↦ (f y).precomp F₃ : M → (F₂ →L[𝕜] F₃) →L[𝕜] (F₁ →L[𝕜] F₃)) :=
   fun x ↦ (hf x).clm_precomp
@@ -140,6 +142,7 @@ nonrec theorem MDifferentiableOn.clm_postcomp {f : M → F₂ →L[𝕜] F₃} {
     MDiff[s] (fun y ↦ (f y).postcomp F₁ : M → (F₁ →L[𝕜] F₂) →L[𝕜] (F₁ →L[𝕜] F₃)) := fun x hx ↦
   (hf x hx).clm_postcomp
 
+@[fun_prop]
 theorem MDifferentiable.clm_postcomp {f : M → F₂ →L[𝕜] F₃} (hf : MDiff f) :
     MDiff (fun y ↦ (f y).postcomp F₁ : M → (F₁ →L[𝕜] F₂) →L[𝕜] (F₁ →L[𝕜] F₃)) :=
   fun x ↦ (hf x).clm_postcomp
@@ -162,6 +165,7 @@ theorem MDifferentiableOn.clm_comp {g : M → F₁ →L[𝕜] F₃} {f : M → F
     (hg : MDiff[s] g) (hf : MDiff[s] f) : MDiff[s] (fun x ↦ (g x).comp (f x)) :=
   fun x hx ↦ (hg x hx).clm_comp (hf x hx)
 
+@[fun_prop]
 theorem MDifferentiable.clm_comp {g : M → F₁ →L[𝕜] F₃} {f : M → F₂ →L[𝕜] F₁}
     (hg : MDiff g) (hf : MDiff f) : MDiff fun x ↦ (g x).comp (f x) :=
   fun x ↦ (hg x).clm_comp (hf x)
@@ -191,6 +195,7 @@ theorem MDifferentiableOn.clm_apply {g : M → F₁ →L[𝕜] F₂} {f : M → 
     (hg : MDiff[s] g) (hf : MDiff[s] f) : MDiff[s] (fun x ↦ g x (f x)) :=
   fun x hx ↦ (hg x hx).clm_apply (hf x hx)
 
+@[fun_prop]
 theorem MDifferentiable.clm_apply {g : M → F₁ →L[𝕜] F₂} {f : M → F₁}
     (hg : MDiff g) (hf : MDiff f) : MDiff fun x ↦ g x (f x) :=
   fun x ↦ (hg x).clm_apply (hf x)
@@ -218,6 +223,7 @@ theorem MDifferentiableOn.cle_arrowCongr {f : M → F₁ ≃L[𝕜] F₂} {g : M
     MDiff[s] (fun y ↦ (f y).arrowCongr (g y) : M → (F₁ →L[𝕜] F₃) →L[𝕜] (F₂ →L[𝕜] F₄)) := fun x hx ↦
   (hf x hx).cle_arrowCongr (hg x hx)
 
+@[fun_prop]
 theorem MDifferentiable.cle_arrowCongr {f : M → F₁ ≃L[𝕜] F₂} {g : M → F₃ ≃L[𝕜] F₄}
     (hf : MDiff (fun x ↦ ((f x).symm : F₂ →L[𝕜] F₁)))
     (hg : MDiff (fun x ↦ (g x : F₃ →L[𝕜] F₄))) :
@@ -244,6 +250,7 @@ theorem MDifferentiableOn.clm_prodMap {g : M → F₁ →L[𝕜] F₃} {f : M �
     MDiff[s] (fun x ↦ (g x).prodMap (f x)) :=
   fun x hx ↦ (hg x hx).clm_prodMap (hf x hx)
 
+@[fun_prop]
 theorem MDifferentiable.clm_prodMap {g : M → F₁ →L[𝕜] F₃} {f : M → F₂ →L[𝕜] F₄}
     (hg : MDiff g) (hf : MDiff f) : MDiff fun x ↦ (g x).prodMap (f x) :=
   fun x ↦ (hg x).clm_prodMap (hf x)
@@ -300,6 +307,7 @@ theorem MDifferentiableOn.smul (hf : MDiff[s] f)
     (hg : MDiff[s] g) : MDiff[s] (fun p ↦ f p • g p) :=
   fun x hx ↦ (hf x hx).smul (hg x hx)
 
+@[fun_prop]
 theorem MDifferentiable.smul (hf : MDiff f) (hg : MDiff g) : MDiff fun p ↦ f p • g p :=
   fun x ↦ (hf x).smul (hg x)
 
